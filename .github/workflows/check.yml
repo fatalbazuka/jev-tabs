@@ -1,0 +1,28 @@
+name: Проверка
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: manifest.json — валидный JSON
+        run: node -e "JSON.parse(require('fs').readFileSync('extension/manifest.json','utf8'))"
+      - name: Синтаксис JavaScript
+        run: for f in extension/*.js; do node --check "$f"; done
+      - name: Файлы из манифеста существуют
+        run: |
+          node -e '
+            const fs = require("fs"), m = require("./extension/manifest.json");
+            const files = [m.background.service_worker, m.action.default_popup, m.options_page,
+              ...Object.values(m.icons), ...Object.values(m.action.default_icon || {})];
+            const miss = files.filter(f => !fs.existsSync("extension/" + f));
+            if (miss.length) { console.error("Нет файлов:", miss); process.exit(1); }
+          '

@@ -1,0 +1,25 @@
+name: Релиз
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Версия тега совпадает с manifest.json
+        run: |
+          V=$(node -p "require('./extension/manifest.json').version")
+          [ "v$V" = "$GITHUB_REF_NAME" ] || { echo "Тег $GITHUB_REF_NAME, а в манифесте $V"; exit 1; }
+          echo "VERSION=$V" >> "$GITHUB_ENV"
+      - name: Архив расширения
+        run: cd extension && zip -r "../jev-tabs-$VERSION.zip" . -x "icons/icon.svg"
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: jev-tabs-${{ env.VERSION }}.zip
+          generate_release_notes: true

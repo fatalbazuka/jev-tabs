@@ -1,0 +1,35 @@
+name: 🐞 Ошибка
+description: Что-то работает не так
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: Что произошло
+      description: И что вы ожидали увидеть.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Как повторить
+      placeholder: |
+        1. Открыть …
+        2. Нажать «Разложить вкладки»
+        3. …
+  - type: input
+    id: provider
+    attributes:
+      label: Провайдер Jev
+      placeholder: TypeSafe / OpenRouter / NanoGPT / DigitalOcean / свой адрес
+  - type: input
+    id: browser
+    attributes:
+      label: Браузер и версия
+      placeholder: Chrome 131, Edge 130 …
+  - type: textarea
+    id: logs
+    attributes:
+      label: Ошибки из консоли service worker
+      description: chrome://extensions → карточка расширения → «service worker». Не вставляйте API-ключ!
+      render: text

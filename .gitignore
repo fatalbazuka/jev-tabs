@@ -1,0 +1,12 @@
+# сборка
+dist/
+*.zip
+*.crx
+*.pem
+
+# системное
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+node_modules/

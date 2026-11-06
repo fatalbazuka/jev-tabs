@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<style>
+  :root { --ink: #1b1f24; --muted: #5b6069; --line: #ebe8e2; --soft: #f7f5f1; }
+  body { font: 14px/1.4 Manrope, system-ui, -apple-system, "Segoe UI", sans-serif; width: 340px; margin: 0; padding: 18px; color: var(--ink); background: #fff; }
+  [hidden] { display: none !important; }
+  .mono { font-family: "JetBrains Mono", ui-monospace, Menlo, monospace; }
+  .top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  .brand { display: flex; align-items: center; gap: 8px; font-size: 16px; font-weight: 800; }
+  .right { display: flex; align-items: center; gap: 8px; }
+  .icon-btn { width: 40px; height: 40px; border: none; border-radius: 10px; background: #f4f2ee; display: flex; align-items: center; justify-content: center; cursor: pointer; flex: none; }
+  .icon-btn:focus-visible, .btn:focus-visible, .chip:focus-visible, .cat:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+  .switch { display: flex; align-items: center; gap: 8px; min-height: 40px; cursor: pointer; font-size: 13px; font-weight: 700; }
+  .switch input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+  .track { width: 44px; height: 26px; border-radius: 13px; background: #c9c5bd; position: relative; transition: background .2s; flex: none; }
+  .knob { position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.25); transition: transform .2s; }
+  .switch input:checked + .track { background: #1e7a46; }
+  .switch input:checked + .track .knob { transform: translateX(18px); }
+  .switch input:focus-visible + .track { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+  .warn { background: #fbe2df; color: #8f1c13; padding: 10px 12px; border-radius: 10px; margin-bottom: 12px; display: none; font-size: 13px; }
+
+  .key-card { background: var(--soft); border: 1px solid #e3dfd8; border-radius: 14px; padding: 14px; margin-bottom: 14px; display: flex; flex-direction: column; gap: 10px; }
+  .key-title { font-size: 14px; font-weight: 800; }
+  .key-hint { font-size: 12px; color: var(--muted); }
+  .key-hint a { color: var(--ink); font-weight: 700; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip { height: 32px; padding: 0 12px; border-radius: 16px; border: 1px solid #d4d0c8; background: #fff; color: var(--ink); font: inherit; font-size: 12px; font-weight: 700; cursor: pointer; }
+  .chip[aria-checked="true"] { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .field { width: 100%; box-sizing: border-box; height: 36px; padding: 0 10px; margin-bottom: 6px; border: 1px solid #d4d0c8; border-radius: 10px; font: 12px "JetBrains Mono", ui-monospace, monospace; }
+  .key-row { display: flex; gap: 6px; }
+  .key-row input { flex: 1; min-width: 0; height: 40px; padding: 0 12px; border: 1px solid #d4d0c8; border-radius: 10px; font: 13px "JetBrains Mono", ui-monospace, monospace; background: #fff; color: var(--ink); }
+  .key-actions { display: flex; gap: 6px; }
+  .key-status { font-size: 12px; min-height: 16px; }
+  .key-status.ok { color: #1e7a46; } .key-status.err { color: #b42318; }
+  .link-btn { border: none; background: none; padding: 4px 0; font: inherit; font-size: 13px; font-weight: 700; color: var(--ink); text-decoration: underline; cursor: pointer; }
+  .key-line { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #3a3f47; margin-bottom: 12px; }
+  .key-line .link-btn { margin-left: auto; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: #2f9e5c; flex: none; }
+
+  .btn { flex: 1; height: 40px; border-radius: 10px; border: 1px solid #d4d0c8; background: #fff; color: var(--ink); font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; }
+  .btn-dark { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .btn:disabled { opacity: .5; cursor: default; }
+  .btn-big { width: 100%; height: 48px; font-size: 15px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+  .status { font-size: 12px; color: var(--muted); margin: 8px 0 0; min-height: 16px; }
+
+  h2 { font-size: 13px; font-weight: 800; margin: 18px 0 8px; display: flex; align-items: baseline; gap: 6px; }
+  h2 .count { color: var(--muted); font-weight: 600; }
+  h2 .link-btn { margin-left: auto; font-size: 12px; font-weight: 600; color: var(--muted); padding: 0; }
+
+  .cats { display: flex; flex-direction: column; gap: 4px; }
+  .cat { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 36px; padding: 0 10px; border: none; border-radius: 8px; background: none; font: inherit; font-size: 13px; color: var(--ink); cursor: pointer; text-align: left; }
+  .cat:hover { background: var(--soft); }
+  .cat:disabled { cursor: default; color: var(--muted); }
+  .cat:disabled:hover { background: none; }
+  .swatch { width: 12px; height: 12px; border-radius: 4px; flex: none; }
+  .cat .n { margin-left: auto; font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 12px; font-weight: 700; }
+  .cat .state { font-size: 11px; color: var(--muted); width: 66px; text-align: right; }
+
+  .left-list { display: flex; flex-direction: column; gap: 2px; max-height: 210px; overflow-y: auto; margin-bottom: 8px; }
+  .left-item { display: flex; align-items: center; gap: 10px; min-height: 40px; padding: 0 6px; border-radius: 8px; cursor: pointer; }
+  .left-item:hover { background: var(--soft); }
+  .left-item input { width: 16px; height: 16px; accent-color: var(--ink); flex: none; }
+  .left-item img, .left-item .fav { width: 16px; height: 16px; border-radius: 3px; flex: none; background: #e3dfd8; }
+  .left-text { min-width: 0; display: flex; flex-direction: column; }
+  .left-title { font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .left-domain { font-size: 11px; color: var(--muted); }
+  .left-actions { display: flex; gap: 6px; }
+  .empty { font-size: 13px; color: var(--muted); }
+
+  .usage { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; margin-top: 16px; padding-top: 8px; border-top: 1px solid var(--line); font: 11px/1.4 "JetBrains Mono", ui-monospace, monospace; color: var(--muted); }
+  .link-btn.tiny { font-size: 11px; font-weight: 600; color: var(--muted); padding: 0; margin-left: auto; }
+</style>
+</head>
+<body>
+  <div class="top">
+    <div class="brand">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1b1f24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/><path d="M8 4v5"/><path d="M13 4v5"/></svg>
+      Группы вкладок
+    </div>
+    <div class="right">
+      <label class="switch" title="Раскладывать новые вкладки автоматически">
+        <input type="checkbox" id="auto" role="switch" aria-label="Авто для новых вкладок">
+        <span class="track"><span class="knob"></span></span>
+        <span>Авто</span>
+      </label>
+      <button class="icon-btn" id="options" aria-label="Настройки категорий">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1b1f24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div id="warn" class="warn"></div>
+
+  <div id="keyCard" class="key-card" hidden>
+    <div class="key-title">Ключ Jev</div>
+    <div class="chips" id="chips" role="radiogroup" aria-label="Где взят ключ"></div>
+    <div class="key-hint" id="keyHint"></div>
+    <div id="customFields" hidden>
+      <input class="field" type="text" id="customEndpoint" placeholder="https://…/v1/systemone" aria-label="Адрес API" spellcheck="false">
+      <input class="field" type="text" id="customModel" placeholder="Модель, например jev-latest" aria-label="Модель" spellcheck="false">
+    </div>
+    <div class="key-row">
+      <input type="password" id="keyInput" placeholder="Вставь ключ" autocomplete="off" spellcheck="false" aria-label="API-ключ Jev">
+      <button class="icon-btn" id="eye" aria-label="Показать ключ">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1b1f24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
+      </button>
+    </div>
+    <div class="key-actions">
+      <button class="btn" id="paste">Вставить из буфера</button>
+      <button class="btn btn-dark" id="saveKey">Проверить и сохранить</button>
+    </div>
+    <div class="key-status" id="keyStatus" role="status"></div>
+    <button class="link-btn" id="cancelKey" hidden>Отмена</button>
+  </div>
+
+  <div id="keyLine" class="key-line" hidden>
+    <span class="dot"></span><span><b id="keyProvider"></b> · <span class="mono" id="keyMask"></span></span>
+    <button class="link-btn" id="editKey">Изменить</button>
+  </div>
+
+  <button class="btn btn-dark btn-big" id="sort">Разложить вкладки</button>
+  <div class="status" id="status" role="status"></div>
+
+  <h2>Группы <button class="link-btn" id="ungroup">разгруппировать</button></h2>
+  <div class="cats" id="cats"></div>
+
+  <div id="leftBlock" hidden>
+    <h2>Не подошли никуда <span class="count" id="leftCount"></span></h2>
+    <div class="left-list" id="leftList"></div>
+    <div class="left-actions">
+      <button class="btn" id="keep">Оставить</button>
+      <button class="btn btn-dark" id="closeSel">Закрыть выбранные</button>
+    </div>
+  </div>
+
+  <div class="usage" aria-live="polite">
+    <span id="usageDay">Сегодня: 0 запросов</span>
+    <span id="usageTotal"></span>
+    <span id="usageBalance"></span>
+    <button class="link-btn tiny" id="resetUsage">сбросить</button>
+  </div>
+
+  <script src="colors.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

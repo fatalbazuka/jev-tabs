@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Группы вкладок — категории</title>
+<style>
+  :root { --ink: #1b1f24; --muted: #5b6069; --line: #e3dfd8; --soft: #f7f5f1; }
+  body { font: 15px/1.5 Manrope, system-ui, -apple-system, "Segoe UI", sans-serif; max-width: 720px; margin: 32px auto; padding: 0 16px; color: var(--ink); background: #fff; }
+  [hidden] { display: none !important; }
+  h1 { font-size: 24px; margin: 0 0 4px; }
+  .lead { color: var(--muted); margin: 0 0 24px; font-size: 14px; }
+  .cats { display: flex; flex-direction: column; gap: 12px; }
+  .cat { border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; background: #fff; border-left-width: 6px; }
+  .row { display: flex; gap: 10px; align-items: center; }
+  .title-input { flex: 1; min-width: 0; height: 40px; padding: 0 12px; border: 1px solid #d4d0c8; border-radius: 10px; font: inherit; font-weight: 700; }
+  textarea { font-weight: 400 !important; color: var(--ink); }
+  textarea { width: 100%; box-sizing: border-box; min-height: 64px; padding: 10px 12px; border: 1px solid #d4d0c8; border-radius: 10px; font: inherit; font-size: 14px; resize: vertical; }
+  input:focus, textarea:focus { outline: 2px solid var(--ink); outline-offset: 1px; }
+  .label { font-size: 12px; font-weight: 700; color: var(--muted); }
+  .colors { display: flex; flex-wrap: wrap; gap: 6px; border: none; padding: 0; margin: 0; }
+  .colors legend { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .sw { position: relative; }
+  .sw input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+  .sw span { display: block; width: 28px; height: 28px; border-radius: 8px; cursor: pointer; box-shadow: inset 0 0 0 2px rgba(255,255,255,.0); }
+  .sw input:checked + span { box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--ink); }
+  .sw input:focus-visible + span { outline: 2px solid var(--ink); outline-offset: 4px; }
+  .icon-btn { width: 40px; height: 40px; border: none; border-radius: 10px; background: #f4f2ee; display: flex; align-items: center; justify-content: center; cursor: pointer; flex: none; }
+  .icon-btn:disabled { opacity: .35; cursor: default; }
+  .icon-btn:focus-visible, .btn:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+  .other { border: 1px dashed var(--line); border-radius: 14px; padding: 14px 16px; color: var(--muted); font-size: 14px; }
+  .other b { color: var(--ink); }
+  .bar { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; align-items: center; }
+  .btn { height: 42px; padding: 0 18px; border-radius: 10px; border: 1px solid #d4d0c8; background: #fff; color: var(--ink); font: inherit; font-size: 14px; font-weight: 700; cursor: pointer; }
+  .btn-dark { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .btn:disabled { opacity: .5; cursor: default; }
+  #msg { font-size: 14px; }
+  #msg.ok { color: #1e7a46; } #msg.err { color: #b42318; }
+  .hint { font-size: 13px; color: var(--muted); margin-top: 28px; border-top: 1px solid var(--line); padding-top: 16px; }
+</style>
+</head>
+<body>
+  <h1>Категории</h1>
+  <p class="lead">Jev выбирает категорию по заголовку и адресу вкладки, опираясь на описание. Чем конкретнее описание — сайты, сервисы, темы, — тем точнее раскладка. Переименование и смена цвета сразу применяются к открытым группам.</p>
+
+  <div class="cats" id="cats"></div>
+
+  <div class="other" style="margin-top: 12px">
+    <b>Прочее</b> — всегда есть, редактировать не нужно. Сюда попадает всё, что не подошло под категории выше или в чём Jev не уверен. Такие вкладки не группируются: попап предлагает их закрыть.
+  </div>
+
+  <div class="bar">
+    <button class="btn" id="add">+ Добавить категорию</button>
+    <button class="btn" id="reset">Вернуть по умолчанию</button>
+    <span style="flex: 1"></span>
+    <span id="msg" role="status"></span>
+    <button class="btn btn-dark" id="save">Сохранить</button>
+  </div>
+
+  <p class="hint">Ранее разложенные вкладки запоминаются, чтобы не платить за них повторно. При изменении описаний память сбрасывается автоматически. <button class="btn" id="clear" style="height: 34px; padding: 0 12px; font-size: 13px; margin-left: 6px">Сбросить память сейчас</button></p>
+
+  <script src="colors.js"></script>
+  <script src="options.js"></script>
+</body>
+</html>
